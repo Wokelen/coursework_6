@@ -8,7 +8,7 @@ class Ad(models.Model):
     description = models.TextField()
     author = models.ForeignKey('users.User', on_delete=models.CASCADE)
     created_at = models.DateTimeField(auto_now_add=True)
-    image = models.ImageField(upload_to="media/")
+    image = models.ImageField(upload_to="ad_images/", null=True, blank=False)
 
     def __str__(self):
         return self.title

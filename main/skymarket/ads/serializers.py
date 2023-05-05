@@ -25,9 +25,23 @@ class AdSerializer(serializers.ModelSerializer):
 
 class AdDetailSerializer(serializers.ModelSerializer):
     author_first_name = serializers.CharField(source='author.first_name', read_only=True)
+    author_last_name = serializers.CharField(source="author.last_name", required=False)
+    phone = serializers.CharField(source="author.phone", required=False)
+
+    def create(self, validated_data):
+        request = self.context.get("request")
+        validated_data["author_id"] = request.user.pk
+        return super().create(validated_data)
+
+    def update(self, instance, validated_data):
+        user = self.context.get("request").user
+        validated_data["author_id"] = user
+        validated_data['ad'] = instance.ad
+
+        return super().update(instance, validated_data)
 
     class Meta:
         model = Ad
-        fields = ("pk", "title", "price", "author", "author_first_name")
+        fields = ("pk", "title", "price", "author", "author_first_name", "author_last_name", "phone")
 
 
